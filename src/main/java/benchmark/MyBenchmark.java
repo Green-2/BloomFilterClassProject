@@ -27,9 +27,9 @@ public class MyBenchmark {
 
     @Setup
     public void setup(){
-        bloomFilterArray = new BloomFilterArray(arraySize);
-        bloomFilterLinkedList = new BloomFilterLinkedList(arraySize);
-        bloomFilterArrayList = new BloomFilterArrayList(arraySize);
+        bloomFilterArray = new BloomFilterArray(arraySize, 3);
+        bloomFilterLinkedList = new BloomFilterLinkedList(arraySize, 3);
+        bloomFilterArrayList = new BloomFilterArrayList(arraySize, 3);
     }
 
     @Benchmark

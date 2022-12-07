@@ -6,32 +6,31 @@ public class BloomFilterArray implements BloomFilterInterface{
 
     final private int[] bitArray;
     final private int arrayLength;
+    final private int k;
 
-    public BloomFilterArray(int arrayLength){
+    public BloomFilterArray(int arrayLength, int k){
         this.arrayLength = arrayLength;
         this.bitArray = new int[arrayLength];
+        this.k = k;
     }
 
-    /**
-     *
-     * @param object
-     */
     @Override
     public void add(Object object) {
         if (object == null){
             System.err.println("There was an error whilst adding an element to the filter; object can't be null.");
             return;
         }
-        this.bitArray[abs(Utils.hashFunc1(object) % this.arrayLength)]= 1;
-        this.bitArray[abs(Utils.hashFunc2(object) % this.arrayLength)]= 1;
-        this.bitArray[abs(Utils.hashFunc3(object) % this.arrayLength)]= 1;
+        for(int hashID=0; hashID<k; hashID++){
+            this.bitArray[abs(MyHash.hash(object, hashID) % this.arrayLength)]= 1;
+        }
     }
 
     @Override
     public boolean isPresent(Object object) {
-        return this.bitArray[abs(Utils.hashFunc1(object) % this.arrayLength)] == 1
-                && this.bitArray[abs(Utils.hashFunc2(object) % this.arrayLength)] == 1
-                && this.bitArray[abs(Utils.hashFunc3(object) % this.arrayLength)] == 1
-                ;
+        for(int hashID=0; hashID<k; hashID++){
+            if(this.bitArray[abs(MyHash.hash(object, hashID)) % this.arrayLength] == 0)
+                return false;
+        }
+        return true;
     }
 }

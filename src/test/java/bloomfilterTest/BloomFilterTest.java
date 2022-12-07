@@ -43,11 +43,11 @@ public class BloomFilterTest {
      */
     @Test
     public void testAllFilterIntegrity(){
-        setTestValues(new BloomFilterArray(1024));
+        setTestValues(new BloomFilterArray(1024, 3));
         testFilter();
-        setTestValues(new BloomFilterArrayList(1024));
+        setTestValues(new BloomFilterArrayList(1024, 3));
         testFilter();
-        setTestValues(new BloomFilterLinkedList(1024));
+        setTestValues(new BloomFilterLinkedList(1024, 3));
         testFilter();
     }
 }
