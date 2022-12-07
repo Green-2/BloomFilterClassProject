@@ -18,8 +18,11 @@ import java.util.concurrent.TimeUnit;
 @Fork(3)
 @State(Scope.Benchmark)
 public class MyBenchmark {
-    @Param({"10", "100", "1000"})
+    @Param({"1000", "10000", "1000000"})
     public static int arraySize;
+
+    @Param({"20"})
+    public static int nbHashFunctions;
 
     BloomFilterLinkedList bloomFilterLinkedList;
     BloomFilterArray bloomFilterArray;
@@ -27,9 +30,9 @@ public class MyBenchmark {
 
     @Setup
     public void setup(){
-        bloomFilterArray = new BloomFilterArray(arraySize, 3);
-        bloomFilterLinkedList = new BloomFilterLinkedList(arraySize, 3);
-        bloomFilterArrayList = new BloomFilterArrayList(arraySize, 3);
+        bloomFilterArray = new BloomFilterArray(arraySize, nbHashFunctions);
+        bloomFilterLinkedList = new BloomFilterLinkedList(arraySize, nbHashFunctions);
+        bloomFilterArrayList = new BloomFilterArrayList(arraySize, nbHashFunctions);
     }
 
     @Benchmark

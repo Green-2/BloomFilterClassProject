@@ -8,6 +8,11 @@ public class BloomFilterArray implements BloomFilterInterface{
     final private int arrayLength;
     final private int k;
 
+    /**
+     * Constructor for a bloom filter using an ArrayList.
+     * @param arrayLength length of the filter.
+     * @param k amount of hash functions.
+     */
     public BloomFilterArray(int arrayLength, int k){
         this.arrayLength = arrayLength;
         this.bitArray = new int[arrayLength];
