@@ -6,7 +6,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class CSVWriter {
-    public static void makeCSV(ArrayList<String> elements, String filename) throws IOException {
+    /**
+     * Should not be called.
+     */
+    private CSVWriter(){}
+    /**
+     * Creates a file with the given name and data at the root of the project.
+     * CAUTION — This WILL delete any file with the given name. There is no security nor rollback.
+     * @param data The data of the csv file
+     * @param filename The name which the csv will have
+     */
+    public static void makeCSV(ArrayList<String> data, String filename) throws IOException {
+
+        if(!filename.endsWith(".csv")){
+            System.err.println("This function creates csv files.");
+            return;
+        }
 
         //Creating our empty .csv
         File f = new File(filename);
@@ -25,9 +40,9 @@ public class CSVWriter {
             return;
         }
 
-        //Adding to it all elements given as arguments
+        //Adding to it all data given as arguments
         f.createNewFile();
-        for(String csvline : elements){
+        for(String csvline : data){
             fw.append(csvline);
             fw.append("\n");
         }

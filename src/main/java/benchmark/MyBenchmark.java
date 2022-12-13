@@ -55,7 +55,7 @@ public class MyBenchmark {
         bloomFilterArrayList.add(938407180.92364);
         bh.consume(bloomFilterArrayList);
     }
-    /*
+
     @Benchmark
     public void time_add_array(Blackhole bh){
         bloomFilterArray.add(938407180.92364);
@@ -67,17 +67,17 @@ public class MyBenchmark {
     public boolean time_isPresent_linkedlist(){
         return bloomFilterLinkedList.isPresent("En Saga, Op.9 - Jean Sibelius");
     }
-*/
+
     @Benchmark
     public boolean time_isPresent_arraylist(){
         return bloomFilterArrayList.isPresent("En Saga, Op.9 - Jean Sibelius");
     }
-/*
+
     @Benchmark
     public boolean time_isPresent_array(){
         return bloomFilterArray.isPresent("En Saga, Op.9 - Jean Sibelius");
     }
-*/
+
 
     /**
      * Puts random ints into all three filters.

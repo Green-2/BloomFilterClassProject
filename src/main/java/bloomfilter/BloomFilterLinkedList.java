@@ -29,7 +29,7 @@ public class BloomFilterLinkedList implements BloomFilterInterface {
             System.err.println("There was an error whilst adding an element to the filter; object can't be null.");
             return;
         }
-        for(int hashID=0; hashID<k; hashID++){
+        for(int hashID=1; hashID<=k; hashID++){
             this.bitList.set(abs(MyHash.hash(object, hashID)) % this.listLength, 1);
         }
     }
@@ -37,7 +37,7 @@ public class BloomFilterLinkedList implements BloomFilterInterface {
 
     @Override
     public boolean isPresent(Object object) {
-        for (int hashID = 0; hashID < k; hashID++) {
+        for (int hashID=1; hashID<=k; hashID++) {
             if (this.bitList.get(abs(MyHash.hash(object, hashID) % this.listLength)) == 0)
                 return false;
         }

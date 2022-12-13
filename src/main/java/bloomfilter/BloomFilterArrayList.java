@@ -19,7 +19,7 @@ public class BloomFilterArrayList implements BloomFilterInterface{
             System.err.println("There was an error whilst adding an element to the filter; object can't be null.");
             return;
         }
-        for (int hashID = 0; hashID < k; hashID++) {
+        for (int hashID=1; hashID<=k; hashID++) {
             this.bitArray.set(abs(MyHash.hash(object, hashID)) % this.arrayLength, 1);
         }
     }
@@ -36,7 +36,7 @@ public class BloomFilterArrayList implements BloomFilterInterface{
 
     @Override
     public boolean isPresent(Object object) {
-        for(int hashID=0; hashID<k; hashID++) {
+        for(int hashID=1; hashID<=k; hashID++) {
             if(this.bitArray.get(abs(MyHash.hash(object, hashID)) % this.arrayLength) == 0)
                 return false;
         }
