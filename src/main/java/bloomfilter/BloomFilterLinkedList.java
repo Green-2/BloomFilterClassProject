@@ -11,6 +11,12 @@ public class BloomFilterLinkedList implements BloomFilterInterface {
     final private int listLength;
     final private int k;
 
+
+    /**
+     * Constructor for a Bloom filter using a LinkedList for its bit array.
+     * @param arrayLength The length of the filter.
+     * @param k The number of hash functions the filter should use.
+     */
     public BloomFilterLinkedList(int arrayLength, int k) {
         this.bitList = new LinkedList<>(Collections.nCopies(arrayLength, 0));
         this.listLength = arrayLength;

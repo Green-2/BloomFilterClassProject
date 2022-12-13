@@ -4,14 +4,11 @@ package bloomfilter;
 import benchmark.MyBenchmark;
 import org.openjdk.jmh.runner.RunnerException;
 
-import java.util.HashMap;
+import java.io.IOException;
 
-/**
- * @author olivierpergande
- */
 public class Main {
 
-    public static void main(String[] args) throws RunnerException {
-        MyBenchmark.main();
+    public static void main(String[] args) throws RunnerException, IOException {
+        MyBenchmark.testPerformance();
     }
 }

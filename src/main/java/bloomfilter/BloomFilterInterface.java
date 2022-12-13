@@ -7,7 +7,6 @@ package bloomfilter;
 /**
  * Interface for a bloom filter.
  * Should be used to create a bloom filter object with an array type of your choice.
- * @author olivierpergande
  */
 public interface BloomFilterInterface {
 
