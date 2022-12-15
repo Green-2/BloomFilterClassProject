@@ -42,14 +42,14 @@ public class MyBenchmark {
         bloomFilterLinkedList = new BloomFilterLinkedList(arraySize, nbHashFunctions);
         bloomFilterArrayList = new BloomFilterArrayList(arraySize, nbHashFunctions);
     }
-/*
+
     @Benchmark
     public void time_add_linkedlist(Blackhole bh){
         bloomFilterLinkedList.add(938407180.92364);
         bh.consume(bloomFilterLinkedList);
     }
 
-*/
+
     @Benchmark
     public void time_add_arraylist(Blackhole bh){
         bloomFilterArrayList.add(938407180.92364);
