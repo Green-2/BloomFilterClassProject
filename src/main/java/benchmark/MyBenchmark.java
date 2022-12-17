@@ -131,18 +131,21 @@ public class MyBenchmark {
         }
 
         ArrayList<String> results = new ArrayList<>();
-        int arrayResults = ((falseAmountArray*100)/amountOfTests);
-        int arrayListResults = ((falseAmountArrayList*100)/amountOfTests);
-        int linkedListResults = ((falseAmountLinkedList*100)/amountOfTests);
-        results.add("Array"+ "," + (""+relativeLength) + "," + (""+arrayResults));
-        results.add("ArrayList" + "," + (""+relativeLength) + "," + (""+arrayListResults));
-        results.add("LinkedList"+ "," + (""+relativeLength) + "," + (""+linkedListResults));
+        float arrayResults = (((float)falseAmountArray*100)/amountOfTests);
+        float arrayListResults = (((float)falseAmountArrayList*100)/amountOfTests);
+        float linkedListResults = (((float)falseAmountLinkedList*100)/amountOfTests);
+        results.add("Array"+ "," + (""+relativeLength) + "," + (""+arrayResults) + "," + k);
+        /*
+         Uncomment this if you want the csv with all data structures
+        results.add("ArrayList" + "," + (""+relativeLength) + "," + (""+arrayListResults) + "," + k);
+        results.add("LinkedList"+ "," + (""+relativeLength) + "," + (""+linkedListResults) + "," + k);
+        */
 
-        System.out.println("False positive rate for an array bloom filter with a length of " + filterLength +
+        System.out.println("False positive rate for an array bloom filter with k = " + k + ", a length of " + filterLength +
                 " and " + 10000 + " elements added to it  " + arrayResults + "%");
-        System.out.println("False positive rate for an ArrayList bloom filter with a length of " + filterLength +
+        System.out.println("False positive rate for an ArrayList bloom filter with k = " + k + ", a length of " + filterLength +
                 " and " + 10000 + " elements added to it : " + arrayListResults + "%");
-        System.out.println("False positive rate for a LinkedList bloom filter with a length of " + filterLength +
+        System.out.println("False positive rate for a LinkedList bloom filter withk = " + k + ", a length of " + filterLength +
                 " and " + 10000 + " elements added to it : " + linkedListResults + "%");
 
         return results;
@@ -156,11 +159,13 @@ public class MyBenchmark {
 
         new Runner(opt).run();
         ArrayList<String> tocsv = new ArrayList<>();
-        tocsv.add("Data Structure,Relative filter length (% of elements added to filter), False positive rate (%)");
-        tocsv.addAll(testErrorRate(300, 3));
-        tocsv.addAll(testErrorRate(500, 3));
-        tocsv.addAll(testErrorRate(800, 3));
-        tocsv.addAll(testErrorRate(1000, 3));
+        tocsv.add("Data Structure,Relative filter length (% of elements added to filter), False positive rate (%), k");
+        for(int k : new int[]{1,3,5}) {
+            for (int relativLength : new int[]{500, 1000, 3000}) {
+                System.out.println("\n");
+                tocsv.addAll(testErrorRate(relativLength, k));
+            }
+        }
         CSVWriter.makeCSV(tocsv, "error_rates_results.csv");
     }
 }

@@ -4,7 +4,7 @@ import static java.lang.Math.abs;
 
 public class BloomFilterArray implements BloomFilterInterface{
 
-    final private Integer[] bitArray;
+    final private int[] bitArray;
     final private int arrayLength;
     final private int k;
 
@@ -15,7 +15,7 @@ public class BloomFilterArray implements BloomFilterInterface{
      */
     public BloomFilterArray(int arrayLength, int k){
         this.arrayLength = arrayLength;
-        this.bitArray = new Integer[arrayLength];
+        this.bitArray = new int[arrayLength];
         this.k = k;
     }
 
