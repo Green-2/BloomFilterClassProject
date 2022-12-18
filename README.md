@@ -8,6 +8,8 @@
 This project is fully written in Java with Maven as project manager. However, I don't recommend launching the project 
 with Maven. Because I haven't built it to work that way, it certainly won't work.
 
+If you do not have JMH installed on your machine, you will have to donwnload it. 
+
 Use your favourite development interface and start the main function in the Main class.
 Doign so will launch the Benchmarks. Be aware that this will take some time. Expect it to take 5 minutes or more with 
 the default configuration.
