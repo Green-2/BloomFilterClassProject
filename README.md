@@ -5,51 +5,52 @@
 
 
 ## Specifications & Run instructions
-This project is fully written with Java and maven as project manager. However, I don't recommend launching the project with maven, as 
-I have not thought it to work that way and it very probably won't work.
+This project is fully written in Java with Maven as project manager. However, I don't recommend launching the project 
+with Maven. Because I haven't built it to work that way, it certainly won't work.
 
-Use your favorite development interface and start the main function in the Main class.
-This will launch the Benchmarks. Be aware that this will take some time, expect it to take 5 minutes or more with the 
-default configuration.
+Use your favourite development interface and start the main function in the Main class.
+Doign so will launch the Benchmarks. Be aware that this will take some time. Expect it to take 5 minutes or more with 
+the default configuration.
 
-At end of execution, two CSV files should have been generated, which are the results of all benchmarks conducted.  
+After completion of the execution, two CSV files should have been generated, which are the results of all benchmarks conducted.  
 
 ## What is a Bloom filter ? And how is it implemented here ?
 
 ### Short explanation
-A Bloom filter is a data structure having a list of bits able to do two things. 
+A Bloom filter is a data structure having a list of bits that can do two things. 
 - Check that an object *is not* in the filter with a **100% probability**
 - Check that an object *is* in the filter with **a certain probability < 100%**
 
 Note that this means a Bloom filter can return a *False positive* check.
 
 "But how is this certain probability defined ?", you might ask. That is the fun part. We will talk about that a little bit later.
-First, let me explain how we add an object to a bloom filter. It's really simple !
+First, allow me to explain how to add an object to a bloom filter. It's actually quite simple !
 
 At the beginning of the process, we must decide the <ins>**k**</ins> of the bloom filter we're working with.
-The k of a Bloom filter is the **amount of hash functions** it uses to store objects.
+The k of a Bloom filter is the **number of hash functions** it uses to store objects.
 
 When an object is getting added to the filter, the filter generates *k* hashes of the object and passes all corresponding
-bits to 1. Of course, the hashes are being applied a modulo on the length of the array. 
+bits to 1. Of course, the hashes are being applied a modulo of the length of the array to always be in range of 
+the filter's bit array. 
 
 For example, if a bloom filter starts with a bit list of [0,0,0,0,0,0,0,0,0,0], the filter has k=2, and we want to add an object.
-Let's say the object's hashes are 61 and 34. In this case, the filter will be updated to [0,1,0,1,0,0,0,0,0,0].
-This really is just a very short introduction. To get a better understanding of this probabilistic data structure,
+Let's say the object's hashes are 61 and 34. In this case, the filter will be updated to [0,1,0,0,1,0,0,0,0,0].
+With all that said, this is just a very short introduction. To get a better understanding of this probabilistic data structure,
 I recommend getting a look at the <a href="https://en.wikipedia.org/wiki/Bloom_filter">Wikipedia article</a> on the matter.
 
 ### Implementation 
 
 Three Bloom filters exist in this project : 
-- [BloomFilterArray](src/main/java/bloomfilter/BloomFilterArray.java), using a java array to store its objects
-- [BloomFilterArrayList](src/main/java/bloomfilter/BloomFilterArrayList.java), using an ArrayList to store its objects 
-- [BloomFilterLinkedList](src/main/java/bloomfilter/BloomFilterLinkedList.java), using a LinkedList to sotre its objects
+- [BloomFilterArray](src/main/java/bloomfilter/BloomFilterArray.java), using a java array to store its bit set 
+- [BloomFilterArrayList](src/main/java/bloomfilter/BloomFilterArrayList.java), using an ArrayList to store its bit set 
+- [BloomFilterLinkedList](src/main/java/bloomfilter/BloomFilterLinkedList.java), using a LinkedList to sotre its bit set
 >*It's easy, isn't it?*
 
-You can look at the code for yourself, but I want explain it to you as best as I can. 
-However, you can look at it directly and read the documentation, it should help your understanding. 
+Now, I will explain as best as i can how I implemented these filters. 
+You can look at the code directly and read the documentation, it should help you understand. 
 
-All three bloom filters implement the same functions. That's why 
-[an interface](src/main/java/bloomfilter/BloomFilterInterface.java) with these functions 
+All three bloom filters implement the same methods. That's why 
+[an interface](src/main/java/bloomfilter/BloomFilterInterface.java) with these methods 
 makes up the base of all filters. 
 ```java 
 public interface BloomFilterInterface {
@@ -80,8 +81,8 @@ For the Bloom filter using a LinkedList.
 
 
 
-The **k** and the **length** of all Bloom filters are passed as an argument in the constructor. Once set, they can't be 
-changed. So be aware that if you want to change them, you have to create new filters. 
+The **k** and the **length** of all Bloom filters are passed as arguments in the constructor. Once set, they cannot be 
+changed. So be aware that if you want to change them, you will have to create new filters. 
 
 The implementation of the ```add(Object)``` functionality is basically the same for each filter type : 
 
@@ -103,17 +104,18 @@ And the ```isPresent(Object)``` method doesn't look very different :
     @Override
     public boolean isPresent(Object object) {
         for (int hashID=1; hashID<=k; hashID++) {
-            if ((/* THE ELEMENT IN THE FILTER'S ARRAY AT THE HASHE'S INDEX */) == 0)
+            if ((/* THE ELEMENT IN THE FILTER'S BIT SET AT THE GENERATED HASH MODULO THE LENGTH OF THE BIT SET */) == 0)
                 return false;
         }
         return true;
     }
 ```
 
-When running an ``isPresent(Object)`` method, it returns false as soon as it encounters a 0, which means that the object 
-hasn't been added to the filter.
-However, if all filter's bits at hashes of the object are set to true by other objects, it can return true even though 
-the tested object hasn't been added.
+When running an ``isPresent(Object)`` method, it returns false if at least one bit of the filter's bit set associated to 
+a hash of the object is zero, which means that the object hasn't been added to the filter.
+
+However, if all filter's bits at hashes of the object are set to 1 by other objects, it can return true even though 
+the tested object hasn't been added. This scenario is called a **superposition**.
 
 Notice how the amount of hashes checked (and added) depends on the **k** of the filter.
 
@@ -121,9 +123,9 @@ Notice how the amount of hashes checked (and added) depends on the **k** of the 
 
 Talking about hashes, the way I chose to implement them is very simple as well. 
 
-There is a [MyHash](src/main/java/bloomfilter/MyHash.java) class implementing a single function : ```hash(object o, int n)``` where `o` is the object to hash
-and n the *iteration in which the hash is used*. For instance, the implementation of the add functionality for the 
-``BloomFilterArray`` is the following : 
+There is a [MyHash](src/main/java/bloomfilter/MyHash.java) class implementing a single function : ```hash(object o, int n)``` 
+where `o` is the object to hash and `n` the *iteration in which the hash is used*. For instance, the implementation of 
+the add functionality for the ``BloomFilterArray`` is the following : 
 
 ```java 
     @Override
@@ -155,6 +157,9 @@ class.
 
 Be aware that any file at the project's root called either `error_rate_results.csv` or `jmh-result.csv` will be overwritten.
 
+The False Positive rates are done by hand, and the performance benchmark is done with JMH.
+
+
 ## What's JMH and why did I choose it ? 
 
 JMH is a well-known Java library implementing easy-to-use benchmarking. 
@@ -163,8 +168,6 @@ However, I thought it'd be a good idea to learn the best way of doing so in Java
 
 Hence, the time benchmarks are done with JMH, which evaluates how much time the system takes to perform operations given to 
 the test method. 
-
-The False Positive rates is done by hand. 
 
 ### Implementation of JMH Benchmarks 
 
@@ -180,8 +183,8 @@ Each filter has a test for their `add` and `isPresent` method. For instance, Blo
 ```
 
 As you can see, the `@Benchmark` annotated method does one single thing : add a float to a bloom filter's bit array, 
-and then "consumes" the filter. Essentially, this prevents Java's runtime environment to handle the object, which prevents
-any useless computation time done by the latter.
+and then "consumes" the filter. Essentially, this prevents Java's runtime environment to handle the 
+bloomFilter object, which prevents any useless computation time done by the latter.
 
 
 ### Results
@@ -191,14 +194,15 @@ any useless computation time done by the latter.
 
 #### Time performance 
 
-As to time performance, the results are the following. 
-<style>img{width:30%; margin-left:2%;}</style>
-![](img/add_array_chart.jpg)
-![](img/add_arraylist_chart.jpg)
-![](img/add_linkedlist_chart.jpg)
-![](img/ispresent_array_chart.jpg)
-![](img/ispresent_arraylist_chart.jpg)
-![](img/ispresent_linkedlist_chart.jpg)
+As to time performance, the results are the following.
+
+<img src="img/add_array_chart.jpg" alt="drawing" width="300"/>
+<img src="img/add_arraylist_chart.jpg" alt="drawing" width="300"/>
+<img src="img/add_linkedlist_chart.jpg" alt="drawing" width="300"/>
+<img src="img/ispresent_array_chart.jpg" alt="drawing" width="300"/>
+<img src="img/ispresent_arraylist_chart.jpg" alt="drawing" width="300"/>
+<img src="img/ispresent_linkedlist_chart.jpg" alt="drawing" width="300"/>
+
 
 #### False positive rate 
 
@@ -206,8 +210,14 @@ As to the false positive rate according to `k` and the filter's length, the resu
 
 *Note : the amount of elements added to the filter is 10 000. The results displayed are only for the array data structure
 because it makes no sense to display the others, as they have almost exactly the same rates.*
-<style>img{width:60%; margin-left:2%;}</style>
-![](img/error_results.jpg)
+
+<img src="img/error_results.jpg" alt="drawing" width="700"/>
+
+For instance, with `k` = 3, the following graph can be drawn : 
+
+<img src="img/error_rates_per_datastructure_and_filterlength.png" alt="drawing" width="700"/>
+
+We can directly notice that the data structure does not have an impact on the error rate of a filter.
 
 ### Conclusion 
 
