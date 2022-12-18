@@ -151,6 +151,9 @@ public class MyBenchmark {
         return results;
     }
 
+    /**
+     * Launches all tests and benchmarks. The results are printed to the standard output and generated to CSV files.
+     */
     public static void testPerformance() throws RunnerException, IOException {
         Options opt = new OptionsBuilder()
                 .include(MyBenchmark.class.getSimpleName())

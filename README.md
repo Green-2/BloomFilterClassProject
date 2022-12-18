@@ -142,16 +142,17 @@ the add functionality for the ``BloomFilterArray`` is the following :
     }
 ```
 
-The hash function does nothing really special. It takes java's ``.hash()`` and multiplies it by ``n``, except for negative
+The hash function doesn't really do anything special. It takes java's ``.hash()`` and multiplies it by ``n``, except for negative
 integers, where it first multiplies it by a prime number, so that opposite numbers don't have the same hash.
 
 ## Benchmarking the filters 
 
 > First, what does it mean ? 
-> For this project, we want to measure how long operations take to execute, and the error rate (False positive) filters 
-> have.
+> For this project, we want to measure the time it takesfor the operations to run, and the error rate (False positive) 
+> filters have.
 > 
-> That's to say, we want to know which of them is the most efficient (takes the the least amount of time)
+> That's to say, we want to know which of them is the most efficient (takes the the least amount of time) 
+> and which one is the least susceptible to return False positives.
 >
 
 All benchmarks — be they JMH or error rate, are done in the [MyBenchmark](src/main/java/benchmark/MyBenchmark.java)
@@ -168,7 +169,7 @@ JMH is a well-known Java library implementing easy-to-use benchmarking.
 I'm well aware that my benchmarks could have been done without this library, by proceeding with `System.nanoTime()`. 
 However, I thought it'd be a good idea to learn the best way of doing so in Java. 
 
-Hence, the time benchmarks are done with JMH, which evaluates how much time the system takes to perform operations given to 
+Therefore, the time benchmarks are done with JMH, which evaluates how much time the system takes to perform operations given to 
 the test method. 
 
 ### Implementation of JMH Benchmarks 
@@ -227,13 +228,13 @@ With little surprise, the LinkedList data structure struggles to efficiently add
 As soon as the filter's list length exceeds 10 000, the time it takes to add an element explodes and goes to the hundreds
 of thousands of nanoseconds.
 This is because to access the 80th element of the data structure, you *have to* iterate over all 79 precedent bits. 
-That takes time and processing power, which reverberate on the overall time the method takes to add an object to the filter.
+That takes time and processing power, which reverberates on the overall time the method takes to add an object to the filter.
 
 Array and ArrayList, however, manage to add elements within 40 nanoseconds, although array has a little advantage over ArrayList.
 I presume this advantage comes from the fact that array is a primitive type, and hence better optimpized.
 
 Concerning the isPresent functionality, the results are not that different. 
-Whilst LinkedList explodes the same way from 10 000 length, array and ArrayList execute the method in repsectively ~4.5
+Whilst LinkedList explodes the same way from 10 000 length, array and ArrayList execute the method in respectively ~4.5
 and ~5.5 nanoseconds, regardless of filter size — for the same reasons stated for the add functionality.
 
 How can we interpret the false positive rates results? 
@@ -250,6 +251,6 @@ This is why a formula for the optimal `k` exists. However, this is not implement
 Overall, we can conclude that LinkedList is absolutely not suited to be the data structure of a Bloom filter, 
 unless you *want* it to take large amounts of time to add a single object to your filters. 
 On the contrary, array seems to way to go, as the benchmarks clearly indicate it performs the best overall, without great variation
-at all depending on the array length.
+at all concerning different bit set lengths.
 
 As to the reliability of the filters, one thing is sure : the longer it is, the better. As long as `k` is not too large as well.
